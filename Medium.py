@@ -1,10 +1,7 @@
 # from Boundery_Conditions import BoundaryCondition
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
 from matplotlib.lines import Line2D
-from matplotlib.axes import Axes
-from TicToc import tic,toc
 from typing import List, Callable, Sequence, Any,Tuple
 
 class BoundaryCondition:
@@ -42,30 +39,5 @@ class Medium:
 
     def plot(self,**kwargs) -> List[Line2D]:
         return plt.plot(self.x, self.y,**kwargs)
-
-m = Medium(y = lambda x:np.sin(x*(np.pi)*1))
-# m = Medium(v =lambda x: 0.05*np.sign(x - 0.5))
-
-fig,ax = plt.subplots()
-plt.legend()
-plt.grid()
-line = m.plot()[0]
-ylims = float("inf"),-1*float("inf")
-tic()
-def update_anim(frame):
-    global ylims
-    toc()
-    tic("calc")
-    m.several_steps(30)
-    line.set_data(m.x,m.y)
-    ylims = min(min(line.get_ydata()),ylims[0]), max(max(line.get_ydata()),ylims[1])
-    ylims_mid_dif = (ylims[1]+ylims[0])/2, (ylims[1]-ylims[0])/2
-    ax.set_ylim(ylims_mid_dif[0]-ylims_mid_dif[1]*1.1,ylims_mid_dif[0]+ylims_mid_dif[1]*1.1)
-    toc()
-    tic("wait")
-
-
-
-anim = FuncAnimation(fig,update_anim,interval=1000/40)
 
 
