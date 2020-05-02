@@ -4,25 +4,30 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib.lines import Line2D
 from matplotlib.axes import Axes
+from typing import List,Tuple
 
-def run_animation(medium: Medium,fps:float):
-    global ylims
-    fig, ax = plt.subplots()
-    plt.legend()
-    plt.grid()
-    line: Line2D = medium.plot()[0]
-    ylims = float("inf"), -1 * float("inf")
+def reset_yaxis_limits(axes,y_vals,old_limits:Tuple[float,float]):
+    limits = min(min(y_vals), old_limits[0]), max(max(y_vals), old_limits[1])
+    limits_mid_dif = (limits[1] + limits[0]) / 2, (limits[1] - limits[0]) / 2
+    axes.set_ylim(limits_mid_dif[0] - limits_mid_dif[1] * 1.1, limits_mid_dif[0] + limits_mid_dif[1] * 1.1)
+    return limits
+
+
+def run_animation(medium: Medium,fps:float,b_draw_u=True,b_draw_v=False):
+    lineu ,axu ,linev ,axv ,fig = medium.plot(b_draw_u,b_draw_v)
+    limitsu,limitsv = (float("inf"), -1 * float("inf")),(float("inf"), -1 * float("inf"))
     tic()
-
     def update_anim(frame):
-        global ylims
+        nonlocal limitsu,limitsv
         toc()
         tic("calc")
-        medium.several_steps(30)
-        line.set_data(medium.x, medium.y)
-        ylims = min(min(line.get_ydata()), ylims[0]), max(max(line.get_ydata()), ylims[1])
-        ylims_mid_dif = (ylims[1] + ylims[0]) / 2, (ylims[1] - ylims[0]) / 2
-        ax.set_ylim(ylims_mid_dif[0] - ylims_mid_dif[1] * 1.1, ylims_mid_dif[0] + ylims_mid_dif[1] * 1.1)
+        medium.several_steps(100)
+        if b_draw_u:
+            lineu.set_data(medium.x, medium.u)
+            limitsu = reset_yaxis_limits(axu, medium.u, limitsu)
+        if b_draw_v:
+            linev.set_data(medium.x, medium.v)
+            limitsv = reset_yaxis_limits(axv, medium.v, limitsv)
         toc()
         tic("wait")
 
