@@ -21,6 +21,14 @@ class TestRun_animation(TestCase):
         m = Medium(v =lambda x: 0.8*np.sign(x - 0.5),boundery_conditions_generators=boundery_conditions + obstacle)
         run_animation(m, 20)
 
+    def test_animate_overcoming_obstacle(self):
+        obsticle_slider_position = 1/4
+        obsticle_slider_width = 0.005
+        obstacle = limited_segment_condition_creator(-0.01,0.01,obsticle_slider_position,obsticle_slider_position+obsticle_slider_width) # obstacle that limits u movement in the indexes 100-200
+        boundery_conditions = open_boundary_conditions_creator()
+        m = Medium(u=lambda x: -np.cos(x * (np.pi) / (2*obsticle_slider_position))*(x<obsticle_slider_position),boundery_conditions_generators=boundery_conditions + obstacle)
+        run_animation(m, 100)
+
     def test_animate_coupled_oscillators(self):
         obsticle_slider_position = 0.4
         obsticle_slider_width = 0.01

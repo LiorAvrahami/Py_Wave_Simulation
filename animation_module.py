@@ -16,12 +16,17 @@ def reset_yaxis_limits(axes,y_vals,old_limits:Tuple[float,float]):
 def run_animation(medium: Medium,fps:float,b_draw_u=True,b_draw_v=False):
     lineu ,axu ,linev ,axv ,fig = medium.plot(b_draw_u,b_draw_v)
     limitsu,limitsv = (float("inf"), -1 * float("inf")),(float("inf"), -1 * float("inf"))
+    re = []
+    if b_draw_u:
+        re.append(lineu)
+    if b_draw_v:
+        re.append(linev)
     tic()
     def update_anim(frame):
         nonlocal limitsu,limitsv
         toc()
         tic("calc")
-        medium.several_steps(100)
+        medium.several_steps(150)#TODO control time flow - pass final time to reach and not number of steps
         if b_draw_u:
             lineu.set_data(medium.x, medium.u)
             limitsu = reset_yaxis_limits(axu, medium.u, limitsu)
@@ -30,6 +35,7 @@ def run_animation(medium: Medium,fps:float,b_draw_u=True,b_draw_v=False):
             limitsv = reset_yaxis_limits(axv, medium.v, limitsv)
         toc()
         tic("wait")
+        return re
 
     anim = FuncAnimation(fig, update_anim, interval=1000 / fps)
     plt.show()

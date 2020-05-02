@@ -6,6 +6,13 @@ from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from typing import List, Callable, Sequence, Any,Tuple, Optional
 
+#TODO smooth out velocity
+#TODO draw bounderies and obstacles
+#TODO Furier transform
+#TODO control time flow - until this is done c is without meaning
+#TODO implement pause
+#TODO implement pause
+
 class Medium:
     c : float
     time:float
@@ -17,7 +24,7 @@ class Medium:
     def __init__(self,x=None,u=None,v=None,c=1,boundery_conditions_generators:List[BounderyCreationFunctor]=None):
         self.c = 1
         self.time = 0
-        self.x = np.linspace(0, 1, 5000) if x is None else x
+        self.x = np.linspace(0, 1, 500) if x is None else x
         self.dx = self.x[1] - self.x[0]
         self.u = np.zeros(self.x.shape) if u is None else u(self.x)
         self.v = np.zeros(self.x.shape) if v is None else v(self.x)
@@ -28,7 +35,7 @@ class Medium:
     def step(self, dt=None):
         if dt == None:
             dt = (np.min(self.dx) / self.c) * 0.5
-        dv = self.c ** 2 * np.gradient(np.gradient(self.u, self.x), self.x) * dt
+        dv = (self.c ** 2) * np.gradient(np.gradient(self.u, self.x), self.x) * dt
         self.u += (self.v + dv) / 2 * dt
         self.v += dv
         for boundery_condition in self.boundery_conditions:
