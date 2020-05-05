@@ -16,7 +16,7 @@ class TestRun_animation(TestCase):
         run_animation(m, 20)
 
     def test_animate_sticky_collision_with_obstacle(self):
-        obstacle = limited_segment_condition_creator(-0.05,0.05,0.1,0.3) # obstacle that limits u movement in the indexes 100-200
+        obstacle = limited_segment_condition_creator(-0.5,0.2,0.1,0.11) # obstacle that limits u movement in the indexes 100-200
         boundery_conditions = open_boundary_conditions_creator()
         m = Medium(v =lambda x: 0.8*np.sign(x - 0.5),boundery_conditions_generators=boundery_conditions + obstacle)
         run_animation(m, 20)
