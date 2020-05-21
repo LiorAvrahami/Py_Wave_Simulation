@@ -24,16 +24,17 @@ def run_animation(medium: Medium,fps:float,b_draw_u=True,b_draw_v=False):
     tic()
     def update_anim(frame):
         nonlocal limitsu,limitsv
-        toc()
+        toc(False)
         tic("calc")
-        medium.several_steps(150)#TODO control time flow - pass final time to reach and not number of steps
+        medium.several_steps(10)#TODO control time flow - pass final time to reach and not number of steps
         if b_draw_u:
             lineu.set_data(medium.x, medium.u)
             limitsu = reset_yaxis_limits(axu, medium.u, limitsu)
         if b_draw_v:
             linev.set_data(medium.x, medium.v)
             limitsv = reset_yaxis_limits(axv, medium.v, limitsv)
-        toc()
+        print(medium.energy_Tot,medium.energy_K,medium.energy_U)
+        toc(False)
         tic("wait")
         return re
 
