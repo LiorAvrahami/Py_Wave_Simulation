@@ -45,7 +45,7 @@ class Medium:
     def step(self, dt=None):
         if dt == None:
             dt = (np.min(self.dx) / self.c) * 0.5
-        dv = (self.c ** 2) * np.gradient(np.gradient(self.u, self.x), self.x) * dt
+        dv = (self.c ** 2) * np.convolve(self.u,(1,-2,1),"same")/(self.dx**2) * dt
         self.u += (self.v + dv) * dt
         self.v += dv
         for boundery_condition in self.boundery_conditions:
