@@ -1,0 +1,9 @@
+smooth out velocity
+Furier transform
+control time flow - until this is done c is without meaning
+implement pause
+f(t) - boundery conditions
+flow out boundery conditions
+point viscosity
+joint that allows only tension to pass and not (so angle will pass but the point won't move)
+joint that allows point to movve up and down freely, but doesn't allow a tangent at that point
