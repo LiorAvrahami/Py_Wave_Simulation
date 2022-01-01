@@ -1,0 +1,39 @@
+on z change interface:
+R(zt,zi) = (zi-zt)/(zi+zt) <- I use the standard where if R = 1 then the reflected wave of a positive wave is a positive wave.
+T(zt,zi) = (2zi)/(zi+zt)
+
+R lives in [-1,1]
+T lives in [0,2]
+
+T = R + 1
+
+----
+denote a = zt/zi
+_R(a) = (1-a)/(1+a) = R(a,1)
+_T(a) = 2/(1+a) = T(a,1)
+
+#note that:
+#_R(-a) = 1/_R(a)
+
+some algebra reviles that:
+if r = _R(a)
+r = (1-a)/(1+a)
+a = 1 - ra - r
+a = (1 - r)/(1 + r) = _R(r)
+meaning:
+inv(_R) = _R
+
+now if we want:
+reflection of 1, meaning _R(target_a) = 1 => target_a = _R(_R(target_a)) = _R(1) = 0, thus zt = 0 grant true reflection of 1
+reflection of 1/2, meaning _R(target_a) = 1/2 => target_a = _R(_R(target_a)) = _R(1/2) = 1/3, thus zt = zi/3 grant true reflection of 1/2
+reflection of 0, meaning _R(target_a) = 0 => target_a = _R(_R(target_a)) = _R(0) = 1, thus zt = zi grant true reflection of 0
+reflection of -1, meaning _R(target_a) = -1 => target_a = _R(_R(target_a)) = _R(-1) = +inf, thus zt = +inf grant true reflection of 1
+
+lets calculate T = qR:
+qR = R + 1
+(q-1)R = 1
+R = 1/(q-1)
+a = _R(1/(q-1)) = (1-1/(q-1))/(1+1/(q-1)) = (q-1-1)/(q-1+1) = (q-2)/q = 1 - 2/q
+a > 0 => 1 - 2/q > 0 => q > 2 or q < 0
+so T = qR is possible for
+for q >= 2 or q <= 0

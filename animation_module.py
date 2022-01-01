@@ -16,7 +16,7 @@ def reset_yaxis_limits(axes,y_vals,old_limits:Tuple[float,float]):
     return limits
 
 
-def run_animation(medium: Medium,fps:float,b_draw_u=True,b_draw_v=False,pause_at_start=True,f_edit_plot=None):
+def run_animation(medium: Medium,fps:float,b_draw_u=True,b_draw_v=False,pause_at_start=True,f_edit_plot=None,on_animation_update=None):
     tic_toc = TicToc()
     target_simulation_time = 0
 
@@ -44,7 +44,8 @@ def run_animation(medium: Medium,fps:float,b_draw_u=True,b_draw_v=False,pause_at
         if b_draw_v:
             linev.set_data(medium.x, medium.v)
             limitsv = reset_yaxis_limits(axv, medium.v, limitsv)
-        # print(medium.energy_Tot,medium.energy_K,medium.energy_U)
+        if on_animation_update is not None:
+            on_animation_update()
         return re
 
     anim = FuncAnimation(fig, update_anim, interval=1000 / fps)

@@ -23,10 +23,12 @@ class BoundaryCreationFunctor():
 
 def limited_segment_condition_creator(low_u: float, high_u: float, x_start: float = None, x_stop: float = None, x_start_index: float = None,
                                       x_stop_index: float = None) -> List[BoundaryCreationFunctor]:
-    def creat(medium: "Medium") -> List["BoundaryCondition"]:
+    def creat(medium: "Medium") -> List["LimmitedY_SegmentCondition"]:
         nonlocal x_start_index, x_stop_index, x_start, x_stop
         x_start_index = np.argmax(medium.x > x_start) if x_start_index is None else x_start_index
-        x_stop_index = np.argmax(medium.x > x_stop) if x_stop_index is None else x_stop_index
+        x_stop_index = np.argmax(medium.x > x_stop) if x_stop is not None else x_stop_index
+        if x_stop_index is None:
+            x_stop_index = x_start_index + 1
         return [LimmitedY_SegmentCondition(medium, x_start_index, x_stop_index, low_u, high_u)]
 
     return [BoundaryCreationFunctor(creat)]

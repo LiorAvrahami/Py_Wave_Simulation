@@ -34,27 +34,34 @@ class Medium:
         self.time = 0
         self.x = np.linspace(0, 1, 500) if x is None else (np.linspace(0, 1, x) if type(x) is int else x)
         self.dx = self.x[1] - self.x[0]
-        self.u = np.zeros(self.x.shape) if u is None else np.array(u(self.x),float)
-        self.v = np.zeros(self.x.shape) if v is None else np.array(v(self.x),float)
-        self.c = np.ones(self.x.shape) if c is None else (float(c) if isinstance(c,Number) else np.array(c(self.x),float))
-        self.z = np.ones(self.x.shape) if z is None else (float(z) if isinstance(z, Number) else np.array(z(self.x), float))
+
+        def handle_field_parameter(parameter,default_val):
+            temp = np.ones(self.x.shape)
+            return temp*default_val if parameter is None else (temp * float(parameter) if isinstance(parameter, Number) else np.array(parameter(self.x), float))
+
+        self.u = handle_field_parameter(u, 0)
+        self.v = handle_field_parameter(v, 0)
+        self.c = handle_field_parameter(c, 1)
+        self.z = handle_field_parameter(z, 1)
+
         if b_apply_lpf_to_z_and_c:
             size_of_filter = 10
             self.z[size_of_filter:-size_of_filter] = \
                 np.convolve(self.z,[1/size_of_filter for i in range(size_of_filter)],"same")[size_of_filter:-size_of_filter]
             self.c[size_of_filter:-size_of_filter] = \
                 np.convolve(self.c, [1 / size_of_filter for i in range(size_of_filter)], "same")[size_of_filter:-size_of_filter]
+
         self.default_dt = (np.min(self.dx) / np.max(self.c)) * 0.5
         boundary_conditions_generators = hard_boundary_conditions_creator() if boundary_conditions_generators is None else boundary_conditions_generators
         self.boundary_conditions = BoundaryCreationFunctor.create_from_list(boundary_conditions_generators,self)
 
     @property
     def energy_K(self) -> float:
-        return sum(0.5*self.v**2)
+        return np.sum(0.5*self.z/self.c*self.v**2*np.gradient(self.x))
 
     @property
     def energy_U(self) -> float:
-        return 0.5*self.c**2*sum(np.gradient(self.u, self.x)**2)
+        return np.sum(0.5*self.c*self.z*np.gradient(self.u, self.x)**2*np.gradient(self.x))
 
     @property
     def energy_Tot(self) -> float:
@@ -84,8 +91,13 @@ class Medium:
             self.step(dt)
 
     def advance_to_time(self,target_time):
-        while(self.time <= target_time):
-            self.step()
+        while self.time < target_time:
+            self.step(self.default_dt)
+            # todo understand why this stuff destroies stabuility
+            # if self.default_dt < (target_time - self.time):
+            #     self.step(self.default_dt)
+            # else:
+            #     self.step(target_time - self.time)
 
     def plot(self,b_draw_u=True,b_draw_v=True,**kwargs) -> Tuple[Optional[Line2D],Optional[Axes],Optional[Line2D],Optional[Axes],Figure]:
         fig, ax1 = plt.subplots()

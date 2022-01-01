@@ -1,0 +1,41 @@
+some good references:
+http://spiff.rit.edu/classes/phys283/lectures/impedance/impedance.html
+http://spiff.rit.edu/classes/phys283/lectures/transmit/transmit.html#third
+https://galileo.phys.virginia.edu/classes/252/Classical_Waves/Classical_Waves.html
+https://personal.math.ubc.ca/~peirce/M257_316_2012_Lecture_8.pdf
+http://hplgit.github.io/num-methods-for-PDEs/doc/pub/wave/pdf/wave-4print-A4-2up.pdf
+https://scholar.harvard.edu/files/schwartz/files/lecture9-impedance.pdf
+
+phisics of string waves with changing tension:
+ma = -T(x)df/dx + T(x+dx)df(x+dx)/dx
+ma = -T(x)df/dx + [T(x)+T'(x)dx][df/dx+df'/dx]
+
+ma = (Tf'' + T'f')dx
+denote r = dm/dx
+rf"" = Tf'' + T'f'
+
+f"" = c^2f'' + T'/r f'
+
+z^2 = rT
+c^2 = T/r
+
+T = cz
+r = z/c
+
+f"" = c^2f'' + (cz)'/(z/c)*f'
+
+f"" = c(c*f'' + [(cz)'/z]*f')
+
+dv = f""dt
+
+
+du[i][n->n+1] = (v[i][n-0.5]+c^2/dx^2())
+
+dv =
+
+
+a/2 + b/2 = 1
+a = 3b
+1 = 2b
+b = 0.5
+a = 1.5
