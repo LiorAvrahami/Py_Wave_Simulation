@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from Medium import Medium
 
 
-class BounderyCreationFunctor():
+class BoundaryCreationFunctor():
     def __init__(self, func: Callable[["Medium"], List["BoundaryCondition"]]):
         self.func = func
 
@@ -17,22 +17,22 @@ class BounderyCreationFunctor():
         return self.func(medium)
 
     @staticmethod
-    def create_from_list(list: List["BounderyCreationFunctor"], medium: "Medium") -> List["BoundaryCondition"]:
+    def create_from_list(list: List["BoundaryCreationFunctor"], medium: "Medium") -> List["BoundaryCondition"]:
         return [cond for conditions_creator in list for cond in conditions_creator(medium)]
 
 
 def limited_segment_condition_creator(low_u: float, high_u: float, x_start: float = None, x_stop: float = None, x_start_index: float = None,
-                                      x_stop_index: float = None) -> List[BounderyCreationFunctor]:
+                                      x_stop_index: float = None) -> List[BoundaryCreationFunctor]:
     def creat(medium: "Medium") -> List["BoundaryCondition"]:
         nonlocal x_start_index, x_stop_index, x_start, x_stop
         x_start_index = np.argmax(medium.x > x_start) if x_start_index is None else x_start_index
         x_stop_index = np.argmax(medium.x > x_stop) if x_stop_index is None else x_stop_index
         return [LimmitedY_SegmentCondition(medium, x_start_index, x_stop_index, low_u, high_u)]
 
-    return [BounderyCreationFunctor(creat)]
+    return [BoundaryCreationFunctor(creat)]
 
 
-def hard_boundary_conditions_creator(u_left: float = None, u_right: float = None,side: Literal["both", "left", "right"] = "both") -> List[BounderyCreationFunctor]:
+def hard_boundary_conditions_creator(u_left: float = None, u_right: float = None,side: Literal["both", "left", "right"] = "both") -> List[BoundaryCreationFunctor]:
     if side == "both":
         side = "leftright"
     def creat(medium: "Medium") -> List["BoundaryCondition"]:
@@ -46,21 +46,34 @@ def hard_boundary_conditions_creator(u_left: float = None, u_right: float = None
             ret.append(StationarySegmentCondition(medium, -1, None, u_right))
         return ret
 
-    return [BounderyCreationFunctor(creat)]
+    return [BoundaryCreationFunctor(creat)]
 
 
-def open_boundary_conditions_creator(side: Literal["both", "left", "right"] = "both") -> List[BounderyCreationFunctor]:
+def open_boundary_conditions_creator(side: Literal["both", "left", "right"] = "both") -> List[BoundaryCreationFunctor]:
     if side == "both":
         side = "leftright"
     def creat(medium: "Medium") -> List["BoundaryCondition"]:
         ret = []
         if "left" in side:
-            ret.append(LeftOpenBounderyCondition(medium))
+            ret.append(LeftOpenBoundaryCondition(medium))
         if "right" in side:
-            ret.append(RightOpenBounderyCondition(medium))
+            ret.append(RightOpenBoundaryCondition(medium))
         return ret
 
-    return [BounderyCreationFunctor(creat)]
+    return [BoundaryCreationFunctor(creat)]
+
+def flow_out_boundary_conditions_creator(side: Literal["both", "left", "right"] = "both") -> List[BoundaryCreationFunctor]:
+    if side == "both":
+        side = "leftright"
+    def creat(medium: "Medium") -> List["BoundaryCondition"]:
+        ret = []
+        if "left" in side:
+            ret.append(LeftFlowOutBoundaryCondition(medium))
+        if "right" in side:
+            ret.append(RightFlowOutBoundaryCondition(medium))
+        return ret
+
+    return [BoundaryCreationFunctor(creat)]
 
 
 class BoundaryCondition(ABC):
@@ -75,17 +88,25 @@ class BoundaryCondition(ABC):
     def draw(self, axes): ...
 
 
-class LeftOpenBounderyCondition(BoundaryCondition):
+class LeftOpenBoundaryCondition(BoundaryCondition):
     def apply_condition(self, u: np.ndarray, v: np.ndarray):
         u[0] = u[1]
         v[0] = v[1]
 
 
-class RightOpenBounderyCondition(BoundaryCondition):
+class RightOpenBoundaryCondition(BoundaryCondition):
     def apply_condition(self, u: np.ndarray, v: np.ndarray):
         u[-1] = u[-2]
         v[-1] = v[-2]
 
+class LeftFlowOutBoundaryCondition(BoundaryCondition):
+    def apply_condition(self, u: np.ndarray, v: np.ndarray):
+        pass # todo, implement
+
+
+class RightFlowOutBoundaryCondition(BoundaryCondition):
+    def apply_condition(self, u: np.ndarray, v: np.ndarray):
+        pass # todo, implement
 
 class SegmentCondition(BoundaryCondition):
     lagrangian_slice: slice
