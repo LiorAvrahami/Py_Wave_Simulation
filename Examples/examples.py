@@ -98,7 +98,7 @@ class ExampleAnimations(TestCase):
         m.advance_to_time(0.7)
         self.assertAlmostEqual(np.max(m.u[m.x>0.5])/np.max(m.u[m.x<0.5]),2, 1)
 
-    # examples with obstacles and with constant c,z:
+    # --- examples with obstacles and with constant c,z ---:
     def test_animate_sticky_collision_with_obstacle(self):
         obstacle = limited_segment_condition_creator(-0.5, 0.2, 0.1, 0.11)  # obstacle that limits u movement in the indexes 100-200
         boundary_conditions = open_boundary_conditions_creator()
@@ -211,3 +211,9 @@ class ExampleAnimations(TestCase):
         m = Medium(u=lambda x: -np.sin(x * (np.pi) / obsticle_slider_positions[1]) * (x < obsticle_slider_positions[1]),
                    boundary_conditions_generators=boundary_conditions + obstacles, c=0.1)
         run_animation(m, 20)
+
+    def test_animate_coupled_oscillators(self):
+        obstacle = limited_segment_condition_creator(-10, 0.2, 0.2)
+        boundary_conditions = open_boundary_conditions_creator(side = "left") + hard_boundary_conditions_creator(u_right=1,side = "right")
+        m = Medium(u=lambda x:x,boundary_conditions_generators=boundary_conditions + obstacle, c=2)
+        run_animation(m, 100)

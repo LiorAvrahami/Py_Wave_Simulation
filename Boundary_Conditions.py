@@ -165,9 +165,13 @@ class LimmitedY_SegmentCondition(SegmentCondition):
         width = self.medium_host.x[max(lagrangian_range)] - x_min
         y_min_low = self.umin - height
         y_min_high = self.umax
-        rect_low = Rectangle((x_min, y_min_low), width, height, color=(0.7, 0.2, 0.1, 0.5))
-        rect_high = Rectangle((x_min, y_min_high), width, height, color=(0.7, 0.2, 0.1, 0.5))
-        axes.add_artist(rect_low)
-        axes.add_artist(rect_high)
+        if width != 0:
+            rect_low = Rectangle((x_min, y_min_low), width, height, color=(0.7, 0.2, 0.1, 0.5),edgecolor=(0.7, 0.2, 0.1, 0.9))
+            rect_high = Rectangle((x_min, y_min_high), width, height, color=(0.7, 0.2, 0.1, 0.5),edgecolor=(0.7, 0.2, 0.1, 0.9))
+            axes.add_artist(rect_low)
+            axes.add_artist(rect_high)
+        else:
+            axes.plot([x_min, x_min], [y_min_high, y_min_high + height], color=(0.1, 0.06, 0.03, 0.8))
+            axes.plot([x_min, x_min], [y_min_low, y_min_low + height], color=(0.1, 0.06, 0.03, 0.8))
 
 #ToDo Add Point Mass

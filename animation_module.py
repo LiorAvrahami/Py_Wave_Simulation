@@ -50,3 +50,4 @@ def run_animation(medium: Medium,fps:float,b_draw_u=True,b_draw_v=False,pause_at
 
     anim = FuncAnimation(fig, update_anim, interval=1000 / fps)
     plt.show()
+    return anim

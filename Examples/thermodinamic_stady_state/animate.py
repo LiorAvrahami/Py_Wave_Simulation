@@ -81,5 +81,5 @@ def on_animation_update():
 
     com_dot.set_data([0,1],[stat_com_arr[-1],stat_com_arr[-1]])
 
-run_animation(m, 20,f_edit_plot=f_edit_plot,on_animation_update=on_animation_update)
+a = run_animation(m, 20,f_edit_plot=f_edit_plot,on_animation_update=on_animation_update)
 plt.show()
