@@ -16,7 +16,7 @@ def reset_yaxis_limits(axes,y_vals,old_limits:Tuple[float,float]):
     return limits
 
 
-def run_animation(medium: Medium,fps:float,b_draw_u=True,b_draw_v=False,pause_at_start=True,f_edit_plot=None,on_animation_update=None):
+def run_animation(medium: Medium,fps:float,b_draw_u=True,b_draw_v=False,pause_at_start=True,f_edit_plot=None,on_animation_update=None,ylim_u=None,ylim_v=None,duration=None):
     tic_toc = TicToc()
     target_simulation_time = 0
 
@@ -26,7 +26,10 @@ def run_animation(medium: Medium,fps:float,b_draw_u=True,b_draw_v=False,pause_at
         re += f_edit_plot(lineu ,axu ,linev ,axv ,fig)
     if pause_at_start:
         plt.pause(0.5)
-    limitsu,limitsv = (float("inf"), -1 * float("inf")),(float("inf"), -1 * float("inf"))
+
+    limitsu = (float("inf"), -1 * float("inf")) if ylim_u is None else ylim_u
+    limitsv = (float("inf"), -1 * float("inf")) if ylim_v is None else ylim_v
+
     if b_draw_u:
         re.append(lineu)
     if b_draw_v:
@@ -48,6 +51,6 @@ def run_animation(medium: Medium,fps:float,b_draw_u=True,b_draw_v=False,pause_at
             on_animation_update()
         return re
 
-    anim = FuncAnimation(fig, update_anim, interval=1000 / fps)
-    plt.show()
+    anim = FuncAnimation(fig, update_anim,frames=fps*duration, interval=1000 / fps)
+    # plt.show()
     return anim

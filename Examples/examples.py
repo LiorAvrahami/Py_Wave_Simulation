@@ -14,8 +14,38 @@ import numpy as np
 class ExampleAnimations(TestCase):
     # examples without obstacles and with constant c,z:
     def test_animate_lowest_standing_wave(self):
-        m = Medium(u=lambda x: np.sin(x * (np.pi) * 1))
+        m = Medium(u=lambda x: np.sin(2*x * (np.pi) * 1))
+        run_animation(m, 40,b_draw_v=True)
+
+    # examples without obstacles and with constant c,z:
+    def test_animate_string_pluck_wave(self):
+        pluck_point = 0.7
+        def u_func(x_arr):
+            return [x/pluck_point if x < pluck_point else 1-(x-pluck_point)/(1-pluck_point) for x in x_arr]
+
+        m = Medium(u=u_func,c=0.1)
+
         run_animation(m, 40)
+
+    # examples without obstacles and with constant c,z:
+    def test_animate_string_pluck_half_wave(self):
+        pluck_point = 0.7
+        def u_func(x_arr):
+            return [x/pluck_point if x < pluck_point else 1-(x-pluck_point)/(1-pluck_point) for x in x_arr]
+
+        obstacle = limited_segment_condition_creator(0,10, 0.41,0.51)  # obstacle that limits u movement in the indexes 100-200
+
+        m = Medium(u=u_func,c=0.1,boundary_conditions_generators=obstacle)
+
+        def on_animation_update():
+            if m.time > 100:
+                b = [b for b in m.boundary_conditions if type(b) is LimmitedY_SegmentCondition]
+                if len(b) == 0:
+                    return
+                else:
+                    del(m.boundary_conditions[m.boundary_conditions.index(b[0])])
+
+        run_animation(m, 40,on_animation_update=on_animation_update)
 
     def test_animate_higher_standing_wave(self):
         m = Medium(u=lambda x: np.sin(x * (np.pi) * 9),c=0.1)
@@ -63,7 +93,28 @@ class ExampleAnimations(TestCase):
             ax.add_patch(p)
             return [p]
 
-        run_animation(m, 40, f_edit_plot=f_edit_plot)
+        a = run_animation(m, 40, f_edit_plot=f_edit_plot)
+        plt.show()
+
+    # if zt = 3*zi then R = -0.5, T = 0.5. so transmitted/reflected = -1.
+    def test_animate_for_mom(self):
+        start_of_c2 = 0.5
+        end_of_c2 = 1
+        boundary_conditions = hard_boundary_conditions_creator(side="left") + hard_boundary_conditions_creator(side="right")
+        m = Medium(x=1000, v=lambda x: np.array([xi if xi < 0.05 else (0.1 - xi if xi < 0.1 else 0) for xi in x])/0.01,
+                   z=lambda xarr: [0.15 if start_of_c2 < x <= end_of_c2 else 0.1 for x in xarr],
+                   c=lambda xarr: [0.15 if start_of_c2 < x <= end_of_c2 else 0.1 for x in xarr],
+                    boundary_conditions_generators=boundary_conditions)
+
+        def f_edit_plot(lineu, axu, linev, axv, fig):
+            fig: plt.Figure
+            ax: plt.Axes = fig.gca()
+            p = matplotlib.patches.Rectangle((start_of_c2, 10), end_of_c2 - start_of_c2, -20, alpha=0.3, linestyle="--", color="red")
+            ax.add_patch(p)
+            return [p]
+
+        anim = run_animation(m, 40, f_edit_plot=f_edit_plot,ylim_u=(-1.5,1.5),duration=30)
+        anim.save("F:\Lior's stuff\Py_Wave_Simulation\mom_anim_1.gif",)
 
     # if zt = 3*zi then R = -0.5, T = 0.5. so transmitted/reflected = -1.
     def test_split_in_half_neg(self):
@@ -179,15 +230,18 @@ class ExampleAnimations(TestCase):
         plt.show()
 
 
-    def test_animate_coupled_oscillators(self):
+    def test_animate_coupled_oscillatorsa(self):
         obsticle_slider_position = 1 / 4
         obsticle_slider_width = 0.005
         obstacle = limited_segment_condition_creator(-0.01, 0.01, obsticle_slider_position,
                                                      obsticle_slider_position + obsticle_slider_width)  # obstacle that limits u movement in the indexes 100-200
         boundary_conditions = open_boundary_conditions_creator()
-        m = Medium(u=lambda x: -np.cos(x * (np.pi) / (2 * obsticle_slider_position)) * (x < obsticle_slider_position),
+        m = Medium(u=lambda x: (-np.sin(1*(x-obsticle_slider_position) * (np.pi) / (2 * obsticle_slider_position))) * (x < obsticle_slider_position),
                    boundary_conditions_generators=boundary_conditions + obstacle, c=2)
-        run_animation(m, 100)
+        # run_animation(m, 100)
+
+        anim = run_animation(m, 40,ylim_u=(-1.5,1.5),duration=60)
+        anim.save("F:\Lior's stuff\Py_Wave_Simulation\mom_anim_2.gif",)
 
     def test_animate_position_switching(self):
         obsticle_slider_position = 0.5
