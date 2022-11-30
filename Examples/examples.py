@@ -121,7 +121,7 @@ class ExampleAnimations(TestCase):
             text2 = plt.text(0.65, 0.016, "c=0.3, z = 1")
             return [p, text1, text2]
 
-        anim = run_animation(m, 20, initial_limits_u=(-0.02, 0.02), animation_length=10, f_edit_plot=f_edit_plot)
+        anim = run_animation(m, 20, initial_limits_u=(-0.02, 0.02), animation_length=30, f_edit_plot=f_edit_plot)
         # plt.show()
         anim.save(".\\impedence_matching.gif", writer="ffmpeg")
 
