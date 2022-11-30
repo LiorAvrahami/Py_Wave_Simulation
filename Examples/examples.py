@@ -126,7 +126,7 @@ class ExampleAnimations(TestCase):
         anim.save(".\\impedence_matching.gif", writer="ffmpeg")
 
     # if z of both parts of an interface is the same, then no reflection should happen ,regardless of c.
-    def test_animate_medium_change(self):
+    def test_animate_medium_change2(self):
         start_of_c2 = 0.3
         end_of_c2 = 0.6
         boundary_conditions = flow_out_boundary_conditions_creator(side="left") + hard_boundary_conditions_creator(side="right")
@@ -147,7 +147,30 @@ class ExampleAnimations(TestCase):
 
         anim = run_animation(m, 20, initial_limits_u=(-0.02, 0.02), animation_length=30, f_edit_plot=f_edit_plot)
         # plt.show()
-        anim.save(".\\animate_medium_change.gif", writer="ffmpeg")
+        anim.save(".\\animate_medium_change1.gif", writer="ffmpeg")
+
+    # if z of both parts of an interface is the same, then no reflection should happen ,regardless of c.
+    def test_animate_medium_change1(self):
+        start_of_c2 = 0.5
+        end_of_c2 = 0.1
+        boundary_conditions = flow_out_boundary_conditions_creator(side="left") + hard_boundary_conditions_creator(side="right")
+        c_arr_creator = lambda xarr: [0.3 if start_of_c2 < x <= end_of_c2 else 0.1 for x in xarr]
+        m = Medium(x=1000, v=lambda x: [xi if xi < 0.05 else (0.1 - xi if xi < 0.1 else 0) for xi in x],
+                   c=c_arr_creator, z=c_arr_creator, boundary_conditions_generators=boundary_conditions)
+
+        def f_edit_plot(lineu, axu, linev, axv, fig):
+            fig: plt.Figure
+            ax: plt.Axes = fig.gca()
+
+            p = matplotlib.patches.Rectangle((start_of_c2, 1), end_of_c2 - start_of_c2, -2, alpha=0.3, linestyle="--", color="red")
+            text1 = plt.text(0.15, 0.016, "c=0.1, z = 0.1")
+            text2 = plt.text(0.65, 0.016, "c=0.3, z = 0.3")
+            ax.add_patch(p)
+            return [p, text1, text2]
+
+        anim = run_animation(m, 20, initial_limits_u=(-0.02, 0.02), animation_length=30, f_edit_plot=f_edit_plot)
+        # plt.show()
+        anim.save(".\\animate_medium_change1.gif", writer="ffmpeg")
 
     # if zt = 3*zi then R = -0.5, T = 0.5. so transmitted/reflected = -1.
     def test_split_in_half_neg(self):
@@ -209,9 +232,9 @@ class ExampleAnimations(TestCase):
         m = Medium(u=lambda x: (-np.sin(1 * (x - obsticle_slider_position) * (np.pi) / (2 * obsticle_slider_position))) * (x < obsticle_slider_position),
                    boundary_conditions_generators=boundary_conditions + obstacle, c=2)
 
-anim = run_animation(m, 20, initial_limits_u=(-1, 1), animation_length=30)
-# plt.show()
-anim.save(".\\coupled_oscillators.gif", writer="ffmpeg")
+        anim = run_animation(m, 20, initial_limits_u=(-1, 1), animation_length=30)
+        # plt.show()
+        anim.save(".\\coupled_oscillators.gif", writer="ffmpeg")
 
 
 def test_animate_position_switching(self):
