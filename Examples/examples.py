@@ -152,7 +152,7 @@ class ExampleAnimations(TestCase):
     # if z of both parts of an interface is the same, then no reflection should happen ,regardless of c.
     def test_animate_medium_change1(self):
         start_of_c2 = 0.5
-        end_of_c2 = 0.1
+        end_of_c2 = 1
         boundary_conditions = flow_out_boundary_conditions_creator(side="left") + hard_boundary_conditions_creator(side="right")
         c_arr_creator = lambda xarr: [0.3 if start_of_c2 < x <= end_of_c2 else 0.1 for x in xarr]
         m = Medium(x=1000, v=lambda x: [xi if xi < 0.05 else (0.1 - xi if xi < 0.1 else 0) for xi in x],
