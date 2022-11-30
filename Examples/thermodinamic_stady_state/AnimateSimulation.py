@@ -1,7 +1,13 @@
 # __package__ = "Examples.thermodinamic_stady_state.animate.py"
 
+import sys
+
 import matplotlib.pyplot as plt
 import matplotlib.patches
+
+# allows imports relative to project's base
+base_name = "Py_Wave_Simulation"
+sys.path.insert(0, __file__[:__file__.index(base_name) + len(base_name)])
 
 
 from Medium import Medium
@@ -14,7 +20,7 @@ import numpy as np
 
 obstacle_gen = limited_segment_condition_creator(-0.2, 0.2, 0.19)  # obstacle that limits u movement in the indexes 100-200
 boundary_conditions = open_boundary_conditions_creator()
-m = Medium(v=10,c=10, boundary_conditions_generators=boundary_conditions + obstacle_gen)
+m = Medium(v=1,c=1, boundary_conditions_generators=boundary_conditions + obstacle_gen)
 
 obstacle = [b for b in m.boundary_conditions if type(b) is LimmitedY_SegmentCondition][0]
 
