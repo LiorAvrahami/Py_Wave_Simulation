@@ -15,7 +15,8 @@ class ExampleAnimations(TestCase):
     # examples without obstacles and with constant c,z:
     def test_animate_lowest_standing_wave(self):
         m = Medium(u=lambda x: np.sin(2 * x * (np.pi) * 1))
-        run_animation(m, 40, b_draw_v=True)
+        a = run_animation(m, 40, b_draw_v=True)
+        plt.show()
 
     # examples without obstacles and with constant c,z:
     def test_animate_string_pluck_wave(self):
@@ -81,8 +82,8 @@ class ExampleAnimations(TestCase):
             return [p, text1, text2]
 
         anim = run_animation(m, 20, animation_length=30, f_edit_plot=f_edit_plot)
-        # plt.show()
-        anim.save(".\\steadty_state2.gif", writer="ffmpeg")
+        plt.show()
+        # anim.save(".\\steadty_state2.gif", writer="ffmpeg")
 
     # steady state when c and z are not constant is no longer straight.
     def test_animate_steadty_state2_out_of_balance(self):
@@ -101,8 +102,8 @@ class ExampleAnimations(TestCase):
             return [p, text1, text2]
 
         anim = run_animation(m, 20, animation_length=30, f_edit_plot=f_edit_plot)
-        # plt.show()
-        anim.save(".\\steadty_state2_out_of_balance.gif", writer="ffmpeg")
+        plt.show()
+        # anim.save(".\\steadty_state2_out_of_balance.gif", writer="ffmpeg")
 
     # if z of both parts of an interface is the same, then no reflection should happen ,regardless of c.
     def test_impedence_matching(self):

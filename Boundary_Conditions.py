@@ -138,7 +138,7 @@ class StationarySegmentCondition(SegmentCondition):
         lagrangian_range = self.lagrangian_range
         x0 = self.medium_host.x[min(lagrangian_range)]
         x1 = self.medium_host.x[max(lagrangian_range)]
-        axes.scatter([x0, x1], [self.u0, self.u0], marker='x', c=(0.7, 0.2, 0.1, 0.5), s=70)
+        axes.scatter([x0, x1], [self.u0, self.u0], marker='x', c=[(0.7, 0.2, 0.1, 0.5)], s=70)
         # rect_low = Rectangle((x_min,y_min_low),width,height,color=(0.7,0.2,0.1))
         # rect_high = Rectangle((x_min, y_min_high), width, height,color=(0.7,0.2,0.1))
         # axes.add_artist(rect_low)

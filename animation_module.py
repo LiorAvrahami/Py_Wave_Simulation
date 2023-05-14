@@ -15,6 +15,9 @@ from pytictoc import TicToc
 def reset_yaxis_limits(axes, y_vals, old_limits: Tuple[float, float]):
     limits = min(min(y_vals), old_limits[0]), max(max(y_vals), old_limits[1])
     limits_mid_dif = (limits[1] + limits[0]) / 2, (limits[1] - limits[0]) / 2
+    if limits_mid_dif[1] == 0:
+        # if y bottom limit is equal to upper limit.
+        limits_mid_dif = limits_mid_dif[0], 0.1
     axes.set_ylim(limits_mid_dif[0] - limits_mid_dif[1] * 1.1, limits_mid_dif[0] + limits_mid_dif[1] * 1.1)
     return limits
 
@@ -27,7 +30,7 @@ def run_animation(medium: Medium, fps: float, b_draw_u=True, b_draw_v=False, pau
 
     update_animation_iter = AnimationUpdater(medium, b_draw_u, b_draw_v, pause_at_start, f_edit_plot, on_animation_update, initial_limits_u, initial_limits_v)
 
-    anim = FuncAnimation(fig=update_animation_iter.fig, func=update_animation_iter, frames=num_frames, interval=1000 / fps)
+    anim = FuncAnimation(fig=update_animation_iter.fig, func=update_animation_iter, frames=num_frames, interval=1000 / fps, cache_frame_data=False)
     return anim
 
 
